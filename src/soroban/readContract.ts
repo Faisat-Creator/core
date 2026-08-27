@@ -77,21 +77,23 @@ export async function readContract(
   if (metadataResult.status === "error") return metadataResult;
 
   const cache = params.cache;
+  const useCache = cache !== undefined && params.bypassCache !== true;
   const ttlMs = params.ttlMs ?? 5 * 60 * 1000; // Default 5 minutes
-  const revision = cache
+  const revision = useCache
     ? await params.stateTracker?.getRevision(params.contractId) ?? 0
     : 0;
-  const cacheKey = cache
+  const cacheKey = useCache
     ? createContractReadCacheKey(
         params.contractId,
         params.method,
         params.args,
         revision,
+        networkConfig.networkPassphrase,
       )
     : undefined;
 
-  // Check cache if available
-  if (cache && cacheKey) {
+  // Check cache if available and not explicitly bypassed.
+  if (useCache && cacheKey) {
     const cached = cache.get(cacheKey);
     if (cached != null) {
       return ok(cached as ContractCallResult);
@@ -138,7 +140,7 @@ export async function readContract(
       const result = { result: scVal, value: scValToNative(scVal) };
 
       // Cache successful result
-      if (cache && cacheKey) {
+      if (useCache && cacheKey) {
         cache.set(cacheKey, result, ttlMs);
       }
 
@@ -152,7 +154,7 @@ export async function readContract(
     }
   };
 
-  if (cache && cacheKey) {
+  if (useCache && cacheKey) {
     return deduplicateRequest(cacheKey, performRead);
   }
 
