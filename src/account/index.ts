@@ -58,3 +58,11 @@ export type {
 } from "./subscriptions";
 export type { BalanceAlertConfig } from "./createBalanceAlert";
 
+
+export { forecastBalance, forecastAccountBalance } from "./balanceForecast";
+export type {
+  BalanceForecastTransaction,
+  BalanceForecastOptions,
+  BalanceForecastPoint,
+  BalanceForecastResult,
+} from "./balanceForecast";
