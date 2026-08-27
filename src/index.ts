@@ -576,7 +576,10 @@ export type {
   FactoryStatistics,
   FactoryStatisticsSource,
 } from "./soroban/factoryStatistics";
-export { createContractReadCacheKey } from "./soroban/contractCallIdentity";
+export {
+  createContractReadCacheKey,
+  invalidateContractReadCache,
+} from "./soroban/contractCallIdentity";
 export type { BuildContractDeployOptions } from "./soroban/deployContract";
 export { invokeBatchContracts } from "./soroban/invokeBatchContracts";
 export { simulateTransactionBatch } from "./soroban/simulateTransaction";
@@ -687,6 +690,7 @@ export { createInMemoryCache, invalidateContractState } from "./shared/cache";
 export { createTracedLogger } from "./shared/logger";
 export type { LogLevel, LoggerOptions, SorokitLogger } from "./shared/logger";
 export {
+  SorokitErrorCategory,
   SorokitErrorCode,
   assertOk,
   attachTraceId,
@@ -696,7 +700,14 @@ export {
   isOk,
   ok,
 } from "./shared/response";
-export type { SorokitError, SorokitResult } from "./shared/response";
+export type {
+  RecoveryAttempt,
+  RecoveryGuidance,
+  SorokitError,
+  SorokitErrorContext,
+  SorokitErrorOptions,
+  SorokitResult,
+} from "./shared/response";
 export {
   AssetMappingRegistry,
   assetMappingRegistry,

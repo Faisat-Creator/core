@@ -1,6 +1,6 @@
 import { ok } from "../shared/response";
 import type { SorokitResult } from "../shared/response";
-import { SorokitErrorCode } from "../shared/response";
+import { err, SorokitErrorCode } from "../shared/response";
 import type { AssetBalance } from "./types";
 import { getAccount } from "./getAccount";
 import { validateIssuer } from "../shared/validateIssuer";
@@ -66,14 +66,10 @@ export async function getAssetBalances(
   // Validate issuer format before making any API call
   if (filter?.assetIssuer !== undefined && filter.assetIssuer !== null && filter.assetIssuer !== "") {
     if (!StrKey.isValidEd25519PublicKey(filter.assetIssuer)) {
-      return {
-        status: "error",
-        data: null,
-        error: {
-          code: SorokitErrorCode.ACCOUNT_FETCH_FAILED,
-          message: `Invalid asset issuer address format: "${filter.assetIssuer}"`,
-        },
-      };
+      return err(
+        SorokitErrorCode.ACCOUNT_FETCH_FAILED,
+        `Invalid asset issuer address format: "${filter.assetIssuer}"`,
+      );
     }
   }
 
@@ -90,15 +86,11 @@ export async function getAssetBalances(
         try {
           validateIssuer(balance.assetIssuer, trustedIssuers);
         } catch (cause: unknown) {
-          return {
-            status: "error",
-            data: null,
-            error: {
-              code: (cause as any)?.code || "TX_BUILD_FAILED",
-              message: (cause as Error)?.message || String(cause),
-              cause,
-            },
-          };
+          return err(
+            ((cause as any)?.code || SorokitErrorCode.TX_BUILD_FAILED) as SorokitErrorCode,
+            (cause as Error)?.message || String(cause),
+            cause,
+          );
         }
       }
     }

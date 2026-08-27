@@ -75,9 +75,7 @@ export class EndpointFallbackManager {
                 status: "error",
                 data: null,
                 error: {
-                  code: result.error.code,
-                  message: result.error.message,
-                  cause: result.error.cause,
+                  ...result.error,
                   recoveryAttempts,
                   degradedMode: true,
                 },
@@ -87,9 +85,8 @@ export class EndpointFallbackManager {
               status: "error",
               data: null,
               error: {
-                code: result.error.code,
-                message: result.error.message,
-                cause: result.error.cause ?? lastCause,
+                ...result.error,
+                ...(result.error.cause === undefined && lastCause !== undefined ? { cause: lastCause } : {}),
                 recoveryAttempts,
               },
             };
@@ -117,15 +114,14 @@ export class EndpointFallbackManager {
       lastCause,
     );
 
-    const errObj = isErr(errorResult) ? errorResult.error : { code: SorokitErrorCode.NETWORK_ERROR, message: finalErrorMessage, cause: lastCause };
+    const errObj = errorResult.status === "error" ? errorResult.error : undefined;
+    if (!errObj) return errorResult;
 
     return {
       status: "error",
       data: null,
-      error: {
-        code: errObj.code,
-        message: errObj.message,
-        cause: errObj.cause,
+        error: {
+        ...errObj,
         recoveryAttempts,
         degradedMode: this._allowDegradedMode,
       },

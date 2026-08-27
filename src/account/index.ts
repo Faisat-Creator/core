@@ -37,6 +37,22 @@ export type {
   RecoverAccountKeysParams,
   RecoveryReplacementSigner,
 } from "./keyRotation";
+export {
+  registerRecoveryContacts,
+  configureGuardians,
+  initiateRecovery,
+  approveRecovery,
+  cancelRecovery,
+  executeRecovery,
+  isRecoveryReady,
+} from "./recoveryWorkflow";
+export type {
+  RecoveryPermission,
+  RecoveryContact,
+  RecoveryConfig,
+  RecoveryRequest,
+  RecoveryExecutionPlan,
+} from "./recoveryWorkflow";
 export type {
   AccountInfo,
   AccountMetadata,
