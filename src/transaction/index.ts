@@ -91,6 +91,8 @@ export type { AccountMergeOptions, TrustlineState } from "./buildTransaction";
 export { submitTransaction } from "./submitTransaction";
 export { getTransactionStatus } from "./status";
 export { estimateFee } from "./estimateFee";
+export { buildEscrowTransaction, validateEscrow, validateEscrowAction, createEscrowRelease, createEscrowRefund, createEscrowDispute, isEscrowExpired } from "./escrow";
+export type { EscrowAction, EscrowState, EscrowTiming, EscrowParams, EscrowValidation } from "./escrow";
 export { streamTransactions } from "./streamTransactions";
 export {
   getAssetPrice,
@@ -160,6 +162,7 @@ export type {
   CongestionFeeEstimate,
   TransactionPriority,
   PriorityMultipliers,
+  AdaptiveFeeOptions,
 } from "./estimateFee";
 export {
   fetchCongestionFeeEstimate,
@@ -172,6 +175,7 @@ export {
   ADAPTIVE_FEE_TTL_INTERMEDIATE_MS,
   FEE_HISTORY_MAX_ENTRIES,
   DEFAULT_PRIORITY_MULTIPLIERS,
+  calculateAdaptiveFee,
 } from "./estimateFee";
 export {
   findSwapPath,
