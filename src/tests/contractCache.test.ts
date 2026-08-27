@@ -17,7 +17,10 @@ import {
   createInMemoryCache,
   invalidateContractState,
 } from "../shared/cache";
-import { createContractReadCacheKey } from "../soroban/contractCallIdentity";
+import {
+  createContractReadCacheKey,
+  invalidateContractReadCache,
+} from "../soroban/contractCallIdentity";
 import { readContract } from "../soroban/readContract";
 import type { ResolvedNetworkConfig } from "../shared/types";
 import type { SorokitCache } from "../shared/cache";
@@ -138,6 +141,13 @@ describe("createContractReadCacheKey", () => {
     const key = createContractReadCacheKey(contractId, "fn", []);
     expect(key).toContain(contractId);
   });
+
+  it("scopes identical calls to their network context", () => {
+    const contractId = randomContractId();
+    const testnetKey = createContractReadCacheKey(contractId, "fn", [], 0, "testnet");
+    const mainnetKey = createContractReadCacheKey(contractId, "fn", [], 0, "mainnet");
+    expect(testnetKey).not.toBe(mainnetKey);
+  });
 });
 
 // ─── invalidateContractState ──────────────────────────────────────────────────
@@ -167,12 +177,37 @@ describe("invalidateContractState", () => {
     expect(cache.get("key-a")).toBeUndefined();
     expect(cache.get("key-b")).toBe("value-b");
   });
+
+  it("invalidates a deterministic contract-read entry", () => {
+    const cache = createInMemoryCache();
+    const contractId = randomContractId();
+    const key = createContractReadCacheKey(contractId, "balance", [], 0, "testnet");
+    cache.set(key, { result: "old" });
+    invalidateContractReadCache(cache, contractId, "balance", [], 0, "testnet");
+    expect(cache.get(key)).toBeUndefined();
+  });
 });
 
 // ─── readContract caching ──────────────────────────────────────────────────────
 
 describe("readContract — cache behaviour", () => {
   beforeEach(setupMocks);
+
+  it("bypasses cache lookup, deduplication, and writes when requested", async () => {
+    const cache = createInMemoryCache();
+    const params = {
+      contractId: randomContractId(),
+      method: "get_price",
+      publicKey: Keypair.random().publicKey(),
+      cache,
+      bypassCache: true,
+    };
+
+    await readContract(networkConfig.rpcUrl, networkConfig.horizonUrl, networkConfig, params);
+    await readContract(networkConfig.rpcUrl, networkConfig.horizonUrl, networkConfig, params);
+    expect(mockSimulateTransaction).toHaveBeenCalledTimes(2);
+    expect(cache.get("sorokit:contract-read:any")).toBeUndefined();
+  });
 
   it("returns a result without cache when no cache is passed", async () => {
     const result = await readContract(
@@ -319,7 +354,13 @@ describe("readContract — cache behaviour", () => {
     expect(mockSimulateTransaction).toHaveBeenCalledTimes(1);
 
     // Invalidate
-    const cacheKey = createContractReadCacheKey(contractId, "get_price", []);
+    const cacheKey = createContractReadCacheKey(
+      contractId,
+      "get_price",
+      [],
+      0,
+      networkConfig.networkPassphrase,
+    );
     invalidateContractState(cacheKey, cache);
 
     // Second call — cache miss, must hit RPC again

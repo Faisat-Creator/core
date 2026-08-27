@@ -1,4 +1,4 @@
-import { SorokitErrorCode } from "./response";
+import { err, SorokitErrorCode } from "./response";
 import type { SorokitResult } from "./response";
 
 /**
@@ -14,14 +14,7 @@ export interface TokenAsset {
  */
 export function validateAssetCode(code: string): SorokitResult<void> {
   if (!code || typeof code !== "string" || code.trim().length === 0) {
-    return {
-      status: "error",
-      data: null,
-      error: {
-        code: SorokitErrorCode.INVALID_CONFIG,
-        message: "Asset code must be a non-empty string",
-      },
-    };
+    return err(SorokitErrorCode.INVALID_CONFIG, "Asset code must be a non-empty string");
   }
   return { status: "ok", data: undefined, error: null };
 }
@@ -33,14 +26,10 @@ export function validateAssetIssuer(
   issuer: string | null,
 ): SorokitResult<void> {
   if (issuer !== null && (typeof issuer !== "string" || issuer.length === 0)) {
-    return {
-      status: "error",
-      data: null,
-      error: {
-        code: SorokitErrorCode.INVALID_CONFIG,
-        message: "Asset issuer must be null (native) or a non-empty string",
-      },
-    };
+    return err(
+      SorokitErrorCode.INVALID_CONFIG,
+      "Asset issuer must be null (native) or a non-empty string",
+    );
   }
   return { status: "ok", data: undefined, error: null };
 }

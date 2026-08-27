@@ -42,6 +42,16 @@ export type {
   SigningDelegationSignature,
 } from "./wallet";
 export {
+  discoverHardwareWallets,
+  getHardwareWalletPublicKey,
+  signTransactionWithHardwareWallet,
+} from "./wallet/hardwareWallet";
+export type {
+  HardwareWalletAdapter,
+  HardwareWalletDevice,
+  HardwareWalletCapabilities,
+} from "./wallet/hardwareWallet";
+export {
   FreighterAdapter,
   LobstrAdapter,
   XBullAdapter,
@@ -320,6 +330,27 @@ export type {
 } from "./transaction/transactionContext";
 export { buildAccountMerge, validateMemoPolicy } from "./transaction";
 export type { AccountMergeOptions } from "./transaction";
+export {
+  evaluateTrustlineApproval,
+  buildApprovedTrustlineTransaction,
+  analyzeTransactionCosts,
+  summarizeTransactionCosts,
+  forecastTransactionCosts,
+  reverseTransaction,
+  issueRefund,
+} from "./transaction";
+export type {
+  TrustlineApprovalPolicy,
+  TrustlineApprovalDecision,
+  ApprovedTrustlineBuild,
+  TransactionCostRecord,
+  TransactionCostAnalysis,
+  CostSummary,
+  PlannedOperation,
+  CostForecast,
+  RefundParams,
+  RefundDetails,
+} from "./transaction";
 
 // ─── Fee-bump transactions (#398) ─────────────────────────────────────────────
 export { buildFeeBumpTransaction } from "./transaction/feeBumpTransaction";
@@ -551,7 +582,10 @@ export type {
   FactoryStatistics,
   FactoryStatisticsSource,
 } from "./soroban/factoryStatistics";
-export { createContractReadCacheKey } from "./soroban/contractCallIdentity";
+export {
+  createContractReadCacheKey,
+  invalidateContractReadCache,
+} from "./soroban/contractCallIdentity";
 export type { BuildContractDeployOptions } from "./soroban/deployContract";
 export { invokeBatchContracts } from "./soroban/invokeBatchContracts";
 export { simulateTransactionBatch } from "./soroban/simulateTransaction";
@@ -664,6 +698,7 @@ export { createInMemoryCache, invalidateContractState } from "./shared/cache";
 export { createTracedLogger } from "./shared/logger";
 export type { LogLevel, LoggerOptions, SorokitLogger } from "./shared/logger";
 export {
+  SorokitErrorCategory,
   SorokitErrorCode,
   assertOk,
   attachTraceId,
@@ -673,7 +708,14 @@ export {
   isOk,
   ok,
 } from "./shared/response";
-export type { SorokitError, SorokitResult } from "./shared/response";
+export type {
+  RecoveryAttempt,
+  RecoveryGuidance,
+  SorokitError,
+  SorokitErrorContext,
+  SorokitErrorOptions,
+  SorokitResult,
+} from "./shared/response";
 export {
   AssetMappingRegistry,
   assetMappingRegistry,
@@ -773,3 +815,27 @@ export type {
   TransactionBundle,
   CreateBundleOptions,
 } from "./transaction/bundles";
+
+// ─── Forecasting, storage analysis, and congestion monitoring ──────────────────
+export { forecastBalance, forecastAccountBalance } from "./account/balanceForecast";
+export type {
+  BalanceForecastTransaction,
+  BalanceForecastOptions,
+  BalanceForecastPoint,
+  BalanceForecastResult,
+} from "./account/balanceForecast";
+export { analyzeContractStorage } from "./soroban/storageAnalysis";
+export type {
+  ContractStorageEntry,
+  StorageAnalysisOptions,
+  StorageEntryReport,
+  StorageRecommendation,
+  StorageAnalysisReport,
+} from "./soroban/storageAnalysis";
+export { CongestionMonitor, createCongestionMonitor } from "./network/congestionMonitor";
+export type {
+  CongestionSample,
+  CongestionMonitorOptions,
+  CongestionLevel,
+  CongestionSnapshot,
+} from "./network/congestionMonitor";

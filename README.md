@@ -51,6 +51,7 @@ It is deliberately stateless and framework-agnostic. It runs in Node, the browse
 - [Networks](#networks)
 - [Testing Utilities](#testing-utilities)
 - [Examples](#examples)
+- [Workflow and Architecture Guides](#workflow-and-architecture-guides)
 - [New in This Release](#new-in-this-release)
 - [Design Principles](#design-principles)
 - [License](#license)
@@ -516,6 +517,19 @@ Examples are type-checked against the SDK source with `npm run typecheck:example
 ## Contributing
 
 Pull requests are welcome. For significant changes, please open an issue first to discuss what you'd like to change.
+
+---
+
+## Workflow and Architecture Guides
+
+The documentation now includes task-oriented, executable workflows and a contributor-facing architecture guide:
+
+| Guide | Use it for |
+| --- | --- |
+| [`docs/workflows.md`](docs/workflows.md) | Complete transaction lifecycle, wallet signing, multisignature signing, Soroban calls, trustline approval, cost planning, refunds, and recovery patterns |
+| [`docs/architecture.md`](docs/architecture.md) | Module boundaries, data flow, result/error conventions, extension guidance, and migration from direct Stellar SDK usage |
+
+Both guides use the current exported API shape and keep policy, construction, signing, submission, and recovery concerns separate.
 
 ---
 

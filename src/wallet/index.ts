@@ -640,3 +640,14 @@ export function createLocalStorageAdapter(
     },
   };
 }
+
+export {
+  discoverHardwareWallets,
+  getHardwareWalletPublicKey,
+  signTransactionWithHardwareWallet,
+} from "./hardwareWallet";
+export type {
+  HardwareWalletAdapter,
+  HardwareWalletDevice,
+  HardwareWalletCapabilities,
+} from "./hardwareWallet";

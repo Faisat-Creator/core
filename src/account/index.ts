@@ -37,6 +37,22 @@ export type {
   RecoverAccountKeysParams,
   RecoveryReplacementSigner,
 } from "./keyRotation";
+export {
+  registerRecoveryContacts,
+  configureGuardians,
+  initiateRecovery,
+  approveRecovery,
+  cancelRecovery,
+  executeRecovery,
+  isRecoveryReady,
+} from "./recoveryWorkflow";
+export type {
+  RecoveryPermission,
+  RecoveryContact,
+  RecoveryConfig,
+  RecoveryRequest,
+  RecoveryExecutionPlan,
+} from "./recoveryWorkflow";
 export type {
   AccountInfo,
   AccountMetadata,
@@ -58,3 +74,11 @@ export type {
 } from "./subscriptions";
 export type { BalanceAlertConfig } from "./createBalanceAlert";
 
+
+export { forecastBalance, forecastAccountBalance } from "./balanceForecast";
+export type {
+  BalanceForecastTransaction,
+  BalanceForecastOptions,
+  BalanceForecastPoint,
+  BalanceForecastResult,
+} from "./balanceForecast";
