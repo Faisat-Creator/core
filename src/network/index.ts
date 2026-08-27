@@ -140,3 +140,11 @@ export async function checkNetworkHealth(
 
   return ok({ status, horizon, rpc, issues, recommendations });
 }
+
+export { CongestionMonitor, createCongestionMonitor } from "./congestionMonitor";
+export type {
+  CongestionSample,
+  CongestionMonitorOptions,
+  CongestionLevel,
+  CongestionSnapshot,
+} from "./congestionMonitor";

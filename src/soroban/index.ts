@@ -486,3 +486,12 @@ function parseInteger(value: unknown): bigint | undefined {
   if (typeof value === "string" && /^-?\d+$/.test(value)) return BigInt(value);
   return undefined;
 }
+
+export { analyzeContractStorage } from "./storageAnalysis";
+export type {
+  ContractStorageEntry,
+  StorageAnalysisOptions,
+  StorageEntryReport,
+  StorageRecommendation,
+  StorageAnalysisReport,
+} from "./storageAnalysis";

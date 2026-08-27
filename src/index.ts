@@ -39,6 +39,16 @@ export type {
   SigningDelegationSignature,
 } from "./wallet";
 export {
+  discoverHardwareWallets,
+  getHardwareWalletPublicKey,
+  signTransactionWithHardwareWallet,
+} from "./wallet/hardwareWallet";
+export type {
+  HardwareWalletAdapter,
+  HardwareWalletDevice,
+  HardwareWalletCapabilities,
+} from "./wallet/hardwareWallet";
+export {
   FreighterAdapter,
   LobstrAdapter,
   XBullAdapter,
@@ -765,3 +775,27 @@ export type {
   TransactionBundle,
   CreateBundleOptions,
 } from "./transaction/bundles";
+
+// ─── Forecasting, storage analysis, and congestion monitoring ──────────────────
+export { forecastBalance, forecastAccountBalance } from "./account/balanceForecast";
+export type {
+  BalanceForecastTransaction,
+  BalanceForecastOptions,
+  BalanceForecastPoint,
+  BalanceForecastResult,
+} from "./account/balanceForecast";
+export { analyzeContractStorage } from "./soroban/storageAnalysis";
+export type {
+  ContractStorageEntry,
+  StorageAnalysisOptions,
+  StorageEntryReport,
+  StorageRecommendation,
+  StorageAnalysisReport,
+} from "./soroban/storageAnalysis";
+export { CongestionMonitor, createCongestionMonitor } from "./network/congestionMonitor";
+export type {
+  CongestionSample,
+  CongestionMonitorOptions,
+  CongestionLevel,
+  CongestionSnapshot,
+} from "./network/congestionMonitor";
