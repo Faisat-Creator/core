@@ -120,6 +120,8 @@ export interface ContractReadParams {
   publicKey: string;
   /** Optional cache for contract read results */
   cache?: import("../shared/cache").SorokitCache;
+  /** Bypass cache lookup, deduplication, and writes for this request */
+  bypassCache?: boolean;
   /** Optional tracker for cache invalidation based on contract state changes */
   stateTracker?: ContractStateTracker;
   /** Optional TTL for cache entries in milliseconds (default: 5 minutes) */

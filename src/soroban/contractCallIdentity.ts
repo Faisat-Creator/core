@@ -1,5 +1,6 @@
 import { Address, TransactionBuilder, xdr } from "@stellar/stellar-sdk";
 import { createHash } from "crypto";
+import type { SorokitCache } from "../shared/cache";
 
 export interface ContractCallIdentity {
   contractId: string;
@@ -39,10 +40,24 @@ export function createContractReadCacheKey(
   method: string,
   args?: Array<xdr.ScVal | unknown>,
   revision = 0,
+  networkContext = "",
 ): string {
   const argsXdr = serializeContractArgs(args);
-  const hash = createContractCallHash(contractId, method, argsXdr);
+  const hash = createHash("sha256")
+    .update(`${networkContext}\0${contractId}\0${method}\0${argsXdr}`)
+    .digest("hex");
   return `sorokit:contract-read:${contractId}:r${revision}:${hash}`;
+}
+
+export function invalidateContractReadCache(
+  cache: SorokitCache,
+  contractId: string,
+  method: string,
+  args?: Array<xdr.ScVal | unknown>,
+  revision = 0,
+  networkContext = "",
+): void {
+  cache.invalidate(createContractReadCacheKey(contractId, method, args, revision, networkContext));
 }
 
 export function createSimulationCacheKey(

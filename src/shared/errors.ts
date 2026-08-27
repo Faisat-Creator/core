@@ -1,4 +1,4 @@
-import { SorokitErrorCode, ok } from "./response";
+import { SorokitErrorCode, classifyError, defaultRecoveryGuidance, ok } from "./response";
 import type { SorokitError, SorokitResult } from "./response";
 
 /** Maps SDK error codes to consumer-specific strings. Return value replaces error.code at runtime. */
@@ -254,7 +254,14 @@ export function buildError(
   message: string,
   cause?: unknown,
 ): SorokitError {
-  return { code, message, cause };
+  const category = classifyError(code);
+  return {
+    code,
+    message,
+    category,
+    ...(cause !== undefined ? { cause } : {}),
+    recovery: defaultRecoveryGuidance(category),
+  };
 }
 
 /**

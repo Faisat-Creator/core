@@ -16,6 +16,10 @@ export interface ContractDataValidationResult {
 
 export { readContract } from "./readContract";
 export {
+  createContractReadCacheKey,
+  invalidateContractReadCache,
+} from "./contractCallIdentity";
+export {
   decodeAbiValue,
   decodeContractValue,
   encodeAbiValue,
