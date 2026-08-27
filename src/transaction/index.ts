@@ -88,9 +88,32 @@ export {
   validateMemoPolicy,
 } from "./buildTransaction";
 export type { AccountMergeOptions, TrustlineState } from "./buildTransaction";
+export {
+  evaluateTrustlineApproval,
+  buildApprovedTrustlineTransaction,
+} from "../account/trustlinePolicy";
+export type {
+  TrustlineApprovalPolicy,
+  TrustlineApprovalDecision,
+  ApprovedTrustlineBuild,
+} from "../account/trustlinePolicy";
 export { submitTransaction } from "./submitTransaction";
 export { getTransactionStatus } from "./status";
 export { estimateFee } from "./estimateFee";
+export {
+  analyzeTransactionCosts,
+  summarizeTransactionCosts,
+  forecastTransactionCosts,
+} from "./costAnalysis";
+export type {
+  TransactionCostRecord,
+  TransactionCostAnalysis,
+  CostSummary,
+  PlannedOperation,
+  CostForecast,
+} from "./costAnalysis";
+export { reverseTransaction, issueRefund } from "./refunds";
+export type { RefundParams, RefundDetails } from "./refunds";
 export { streamTransactions } from "./streamTransactions";
 export {
   getAssetPrice,

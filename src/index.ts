@@ -326,6 +326,27 @@ export type {
 } from "./transaction/transactionContext";
 export { buildAccountMerge, validateMemoPolicy } from "./transaction";
 export type { AccountMergeOptions } from "./transaction";
+export {
+  evaluateTrustlineApproval,
+  buildApprovedTrustlineTransaction,
+  analyzeTransactionCosts,
+  summarizeTransactionCosts,
+  forecastTransactionCosts,
+  reverseTransaction,
+  issueRefund,
+} from "./transaction";
+export type {
+  TrustlineApprovalPolicy,
+  TrustlineApprovalDecision,
+  ApprovedTrustlineBuild,
+  TransactionCostRecord,
+  TransactionCostAnalysis,
+  CostSummary,
+  PlannedOperation,
+  CostForecast,
+  RefundParams,
+  RefundDetails,
+} from "./transaction";
 
 // ─── Fee-bump transactions (#398) ─────────────────────────────────────────────
 export { buildFeeBumpTransaction } from "./transaction/feeBumpTransaction";
