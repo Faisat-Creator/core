@@ -80,6 +80,16 @@ export type {
   SorokitClientConfig,
   HealthCheckReport,
 } from "./client/createSorokitClient";
+export {
+  checkStellarSdkVersionCompatibility,
+  compareStellarSdkVersion,
+  parseSemverCore,
+  SUPPORTED_STELLAR_SDK_VERSION,
+} from "./client/sdkVersionCompatibility";
+export type {
+  StellarSdkCompatibility,
+  ParsedVersion,
+} from "./client/sdkVersionCompatibility";
 
 // ─── Wallet discovery & account linking ───────────────────────────────────────
 export {
