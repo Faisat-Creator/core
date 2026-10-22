@@ -195,6 +195,43 @@ function resolveAsset(
  */
 export function validateMemoPolicy(params: MemoParams): SorokitResult<void> {
   const hasMemo = typeof params.memo === "string" && params.memo.length > 0;
+  const allowEmpty =
+    params.allowEmptyMemo === true ||
+    (typeof params.memoValidation === "object" &&
+      params.memoValidation !== null &&
+      params.memoValidation.allowEmpty === true);
+
+  // Check rule: "prohibit" first so that passing memo: "" or omitting memo
+  // is accepted under prohibition without triggering empty memo rejection.
+  const isProhibitRule =
+    params.memoValidation === "prohibit" ||
+    (typeof params.memoValidation === "object" &&
+      params.memoValidation !== null &&
+      params.memoValidation.rule === "prohibit");
+
+  if (isProhibitRule) {
+    if (params.memo !== undefined && params.memo !== "") {
+      const configErrorMessage =
+        typeof params.memoValidation === "object" && params.memoValidation !== null
+          ? params.memoValidation.errorMessage
+          : undefined;
+      return err(
+        SorokitErrorCode.TX_BUILD_FAILED,
+        configErrorMessage || "Memo is prohibited for this transaction",
+      );
+    }
+    return ok(undefined);
+  }
+
+  // Rejection of empty or whitespace-only memo strings (#846)
+  if (params.memo !== undefined && !allowEmpty) {
+    if (params.memo.trim().length === 0) {
+      return err(
+        SorokitErrorCode.TX_BUILD_FAILED,
+        "Memo cannot be empty or whitespace-only",
+      );
+    }
+  }
 
   // 1. Backward-compatible requireMemo flag
   if (params.requireMemo && !hasMemo) {
@@ -222,12 +259,7 @@ export function validateMemoPolicy(params: MemoParams): SorokitResult<void> {
         break;
 
       case "prohibit":
-        if (params.memo !== undefined && params.memo !== "") {
-          return err(
-            SorokitErrorCode.TX_BUILD_FAILED,
-            config.errorMessage || "Memo is prohibited for this transaction",
-          );
-        }
+        // Already handled above
         break;
 
       case "require_format": {
@@ -304,7 +336,21 @@ function validateMemoParams(
     return policyResult;
   }
 
+  const allowEmpty =
+    params.allowEmptyMemo === true ||
+    (typeof params.memoValidation === "object" &&
+      params.memoValidation !== null &&
+      params.memoValidation.allowEmpty === true);
+
   if (!params.memo) {
+    if (params.memo === "" && allowEmpty) {
+      const memoType = params.memoType ?? "text";
+      try {
+        if (memoType === "text") return ok(Memo.text(""));
+      } catch {
+        // Fall through
+      }
+    }
     return ok(undefined);
   }
 

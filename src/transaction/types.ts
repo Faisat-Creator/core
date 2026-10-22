@@ -36,6 +36,11 @@ export interface MemoValidationConfig {
   format?: RegExp | string | ((memo: string) => boolean);
   /** Optional custom error message to return on validation failure */
   errorMessage?: string;
+  /**
+   * When true, allows empty strings or whitespace-only memos.
+   * Defaults to false (empty and whitespace-only memos are rejected by default).
+   */
+  allowEmpty?: boolean;
 }
 
 export interface MemoParams {
@@ -56,6 +61,11 @@ export interface MemoParams {
    * Supports "required", "prohibit", and "require_format" with custom format patterns.
    */
   memoValidation?: MemoValidationConfig | MemoValidationRule;
+  /**
+   * When true, opt in to allowing empty strings or whitespace-only memos (#846).
+   * Defaults to false (empty and whitespace-only memos are rejected by default).
+   */
+  allowEmptyMemo?: boolean;
 }
 
 export interface PaymentParams extends MemoParams {

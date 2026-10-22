@@ -86,6 +86,8 @@ export interface ComposeOptions {
   /** Optional transaction memo attached to the built transaction. */
   memo?: string;
   memoType?: MemoType;
+  /** When true, opt in to allowing empty strings or whitespace-only memos (#846). */
+  allowEmptyMemo?: boolean;
   /** Override the Horizon URL for a network-type `network`. */
   horizonUrl?: string;
   /** Override the RPC URL for a network-type `network`. */
@@ -173,7 +175,11 @@ export interface ComposeBuilder {
   setData(key: string, value: DataEntryValue): ComposeBuilder;
   addDeleteDataEntry(key: string): ComposeBuilder;
   deleteData(key: string): ComposeBuilder;
-  addMemo(memo: string, memoType?: MemoType): ComposeBuilder;
+  addMemo(
+    memo: string,
+    memoType?: MemoType,
+    options?: { allowEmpty?: boolean },
+  ): ComposeBuilder;
   /** Enable automatic fee estimation; `{ mode: "high" }` prefers the fast tier. */
   estimateFee(mode: FeeEstimateMode): ComposeBuilder;
   setSequenceNumber(sequenceNumber: string): ComposeBuilder;
@@ -317,7 +323,9 @@ export function compose(
   let feeOverride = options.estimatedFee;
   let sequenceOverride = options.sequenceNumber;
   let timeoutSeconds = options.timeout ?? DEFAULT_TX_TIMEOUT_SECONDS;
-  let memoState: { memo: string; memoType?: MemoType } | undefined;
+  let memoState:
+    | { memo: string; memoType?: MemoType; allowEmptyMemo?: boolean }
+    | undefined;
 
   const warnIfMemoizedMutable = (operation: string): void => {
     if (options.memoize && options.warnOnMutableMemoized !== false) {
@@ -683,8 +691,14 @@ export function compose(
       return this.addDeleteDataEntry(key);
     },
 
-    addMemo(memo, memoType) {
-      memoState = { memo, ...(memoType !== undefined && { memoType }) };
+    addMemo(memo, memoType, memoOptions) {
+      memoState = {
+        memo,
+        ...(memoType !== undefined && { memoType }),
+        ...(memoOptions?.allowEmpty !== undefined && {
+          allowEmptyMemo: memoOptions.allowEmpty,
+        }),
+      };
       return builder;
     },
 
@@ -740,9 +754,14 @@ export function compose(
 
       // 2. Resolve memo once.
       const { memo, memoType } = memoState ?? options;
+      const allowEmptyMemo = memoState?.allowEmptyMemo ?? options.allowEmptyMemo;
       const memoParams =
         memo !== undefined
-          ? { memo, ...(memoType !== undefined && { memoType }) }
+          ? {
+              memo,
+              ...(memoType !== undefined && { memoType }),
+              ...(allowEmptyMemo !== undefined && { allowEmptyMemo }),
+            }
           : undefined;
       const memoResult = memoParams
         ? resolveMemo(memoParams)

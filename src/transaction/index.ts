@@ -248,6 +248,7 @@ export {
 export type {
   TransactionBuilder,
   TransactionOperation,
+  SetMemoOptions,
 } from "./transactionBuilder";
 export type {
   TransactionResult,
