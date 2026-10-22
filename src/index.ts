@@ -80,6 +80,16 @@ export type {
   SorokitClientConfig,
   HealthCheckReport,
 } from "./client/createSorokitClient";
+export {
+  checkStellarSdkVersionCompatibility,
+  compareStellarSdkVersion,
+  parseSemverCore,
+  SUPPORTED_STELLAR_SDK_VERSION,
+} from "./client/sdkVersionCompatibility";
+export type {
+  StellarSdkCompatibility,
+  ParsedVersion,
+} from "./client/sdkVersionCompatibility";
 
 // ─── Wallet discovery & account linking ───────────────────────────────────────
 export {
@@ -1780,6 +1790,8 @@ export {
   STELLAR_MAX_ASSET_CODE_LEN,
   deduplicateRequest,
   createRateLimiter,
+  withRateLimit,
+  SorokitRateLimitError,
   validateContractMethodSpec,
   isValidContractMethodSpec,
   validateSorobanType,
@@ -1801,6 +1813,9 @@ export type {
   SanitizeInputOptions,
   RateLimiterOptions,
   RateLimiter,
+  AsyncMethod,
+  MethodRateLimitConfig,
+  RateLimitDecoratorConfig,
   ContractMethodParamSpec,
   ContractMethodSpecInput,
   ContractMethodValidationData,
